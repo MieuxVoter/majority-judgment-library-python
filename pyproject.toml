@@ -1,0 +1,28 @@
+[tool.black]
+line-length = 90
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '^external/'
+override = "skip"
+ignore_missing_imports = true
+disable-error-code = "override"
+
+[tool.poetry]
+name = "majority_judgment"
+version = "0.1.0"
+description = "Implementation of majority judgment"
+authors = ["Pierre-Louis Guhur <pierrelouisguhur@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.pyright]
+reportMissingImports = false
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--doctest-modules --doctest-glob='*.md' -rA"
+testpaths = [
+    "majority_judgment",
+]
+
