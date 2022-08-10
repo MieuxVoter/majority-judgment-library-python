@@ -11,6 +11,12 @@ We therefore use a _score-based algorithm_ whatsoever.
 
 ## Installation
 
+Simply use `pip` as in:
+
+```bash
+pip install git+https://github.com/MieuxVoter/majority-judgment-library-python
+```
+
 ## Example Usage
 
 Collect the **votes** for each Candidate and provide them in the function `majority_judgment` as is:
