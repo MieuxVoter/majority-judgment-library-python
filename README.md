@@ -1,7 +1,7 @@
 # Majority Judgment Library for Python
 
-[![MIT](https://img.shields.io/github/license/MieuxVoter/majority-judgment-library-python)](./LICENSE)
-[![Join the Discord chat at https://discord.gg/rAAQG9S](https://img.shields.io/discord/705322981102190593.svg)](https://discord.gg/rAAQG9S)
+[![MIT](https://img.shields.io/github/license/MieuxVoter/majority-judgment-library-python?style=for-the-badge)](./LICENSE)
+[![Join the Discord chat at https://discord.gg/rAAQG9S](https://img.shields.io/discord/705322981102190593.svg?style=for-the-badge)](https://discord.gg/rAAQG9S)
 
 Test-driven Python library to help deliberate using [Majority Judgment](https://mieuxvoter.fr/).
 
@@ -24,10 +24,10 @@ Collect the **votes** for each Candidate and provide them in the function `major
 ```
 >>> from majority_judgment import majority_judgment
 >>> data = {
-...    'Pizza': [0,0,0, 1,1, 2,2, 3,3,3], 
-...    'Chips': [0,0, 1,1,2,2,2,2,3,3],
-...    'Pasta': [0,0,1,1,1,2,2,3,3,3],
-...    'Bread': [0,0,1,1,1,1,2,2,2,3],
+...    'Pizza': [!, 0, 3, 0, 2, 0, 3, 1, 2, 3], 
+...    'Chips': [0, 1, 0, 2, 1, 2, 2, 3, 2, 3],
+...    'Pasta': [0, 1, 0, 1, 2, 1, 3, 2, 3, 3],
+...    'Bread': [0, 1, 2, 1, 1, 2, 1, 2, 2, 3],
 ... }
 >>> majority_judgment(data, reverse=False)
 {'Chips': 0, 'Pasta': 1, 'Pizza': 2, 'Bread': 3}
