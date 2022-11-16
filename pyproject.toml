@@ -21,8 +21,5 @@ reportMissingImports = false
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--doctest-modules --doctest-glob='*.md' -rA"
-testpaths = [
-    "majority_judgment",
-]
-
+addopts = "--doctest-modules --doctest-glob='*.md' -rA -s"
+testpaths = ["majority_judgment"]

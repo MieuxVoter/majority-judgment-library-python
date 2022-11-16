@@ -116,7 +116,7 @@ def compute_majority_values(votes: List[Vote]) -> Iterator[Vote]:
 
     for _ in range(num_votes):
         total = sum(grades.values())
-        cumsum = list(accumulate(grades.values()))
+        cumsum = list(accumulate(grades.values(),initial=0.))[1:]
         cumsum = [v / total for v in cumsum]
 
         idx = median_grade(cumsum)
