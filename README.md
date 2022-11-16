@@ -2,6 +2,7 @@
 
 [![MIT](https://img.shields.io/github/license/MieuxVoter/majority-judgment-library-python?style=for-the-badge)](./LICENSE)
 [![Join the Discord chat at https://discord.gg/rAAQG9S](https://img.shields.io/discord/705322981102190593.svg?style=for-the-badge)](https://discord.gg/rAAQG9S)
+![GitHub Actions](https://img.shields.io/github/checks-status/mieuxvoter/majority-judgment-library-python/main?style=for-the-badge)
 
 Test-driven Python library to help deliberate using [Majority Judgment](https://mieuxvoter.fr/).
 
