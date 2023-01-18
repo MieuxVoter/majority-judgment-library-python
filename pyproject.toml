@@ -23,3 +23,7 @@ reportMissingImports = false
 minversion = "6.0"
 addopts = "--doctest-modules --doctest-glob='*.md' -rA -s"
 testpaths = ["majority_judgment"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
