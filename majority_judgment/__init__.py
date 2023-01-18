@@ -44,15 +44,20 @@ def majority_judgment(
     {'B': 0, 'A': 1}
     >>> majority_judgment({'A': A, 'B': B}, reverse=True)
     {'A': 0, 'B': 1}
+    >>> A = [0, 4]
+    >>> B = [1, 2]
+    >>> majority_judgment({'A': A, 'B': B}, reverse=True)
+    {'B': 0, 'A': 1}
     """
     set_num_votes = {len(votes) for votes in votes_by_candidate.values()}
     if not len(set_num_votes) == 1:
         raise NotImplementedError("Unbalanced grades have not been implemented yet.")
 
     majority_values = {
-        candidate: list(compute_majority_values(votes))
+        candidate: sorted(compute_majority_values(votes), reverse=reverse)
         for candidate, votes in votes_by_candidate.items()
     }
+
     ranked_scores = sorted(
         majority_values.items(), key=itemgetter(1), reverse=not reverse
     )
