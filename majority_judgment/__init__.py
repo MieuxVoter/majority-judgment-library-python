@@ -38,7 +38,7 @@ def majority_judgment(
         Rank order for each candidates in a Dictionary Dict[Candidate, rank: int]
 
 
-    >>> A = [0,0,0, 1,1, 2,2, 3,3,3]
+    >>> A = [3, 3, 3, 0,0,0, 1,1, 2,2]
     >>> B = [0,0, 1,1,2,2,2,2,3,3]
     >>> majority_judgment({'A': A, 'B': B}, reverse=False)
     {'B': 0, 'A': 1}
@@ -48,13 +48,15 @@ def majority_judgment(
     >>> B = [1, 2]
     >>> majority_judgment({'A': A, 'B': B}, reverse=True)
     {'B': 0, 'A': 1}
+    >>> majority_judgment({81: [0, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5], 82: [0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]})
+    {82: 0, 81: 1}
     """
     set_num_votes = {len(votes) for votes in votes_by_candidate.values()}
     if not len(set_num_votes) == 1:
         raise NotImplementedError("Unbalanced grades have not been implemented yet.")
 
     majority_values = {
-        candidate: sorted(compute_majority_values(votes), reverse=reverse)
+        candidate: list(compute_majority_values(votes, reverse))
         for candidate, votes in votes_by_candidate.items()
     }
 
@@ -96,7 +98,7 @@ def median_grade(seq: List[float]) -> int:
     return len(seq) - 1
 
 
-def compute_majority_values(votes: List[Vote]) -> Iterator[Vote]:
+def compute_majority_values(votes: List[Vote], reverse: bool) -> Iterator[Vote]:
     """
     Compute iteratively the median grades.
 
@@ -110,27 +112,27 @@ def compute_majority_values(votes: List[Vote]) -> Iterator[Vote]:
 
     Examples from MJ book (1.5):
 
-    >>> list(compute_majority_values([7, 11, 9, 9, 11]))
+    >>> list(compute_majority_values([7, 11, 9, 9, 11], False))
     [9, 9, 11, 7, 11]
-    >>> list(compute_majority_values([8, 11, 9, 9, 10]))
+    >>> list(compute_majority_values([8, 11, 9, 9, 10], False))
     [9, 9, 10, 8, 11]
     """
     grades = convert_votes_to_tally(votes)
-    keys = list(grades.keys())
+    keys = sorted(grades.keys(), reverse=reverse)
+    values = [grades[key] for key in keys]
     num_votes = len(votes)
 
     for _ in range(num_votes):
-        total = sum(grades.values())
-        cumsum = list(accumulate(grades.values(),initial=0.))[1:]
+        total = sum(values)
+        cumsum = list(accumulate(values, initial=0.))[1:]
         cumsum = [v / total for v in cumsum]
 
         idx = median_grade(cumsum)
-        key = keys[idx]
-        yield key
+        yield keys[idx]
 
         # remove median grade
-        grades[key] -= 1
-        assert grades[key] > -1
+        values[idx] -= 1
+        assert values[idx] > -1
 
 
 def convert_votes_to_tally(votes: List[Vote]) -> Dict[Vote, int]:
