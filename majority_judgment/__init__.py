@@ -27,7 +27,7 @@ def majority_judgment(
     votes_by_candidate: Dict[Candidate, List[Vote]]
         Results of the votes
         Candidate correspond to the names of candidates,
-        List of int is the votes for each candidates.
+        List of int is the votes for each candidate.
         The higher the vote, the better.
 
     reverse: bool
@@ -35,11 +35,11 @@ def majority_judgment(
 
     Returns
     -------
-        Rank order for each candidates in a Dictionary Dict[Candidate, rank: int]
+        Rank order for each candidate in a Dictionary Dict[Candidate, rank: int]
 
 
-    >>> A = [3, 3, 3, 0,0,0, 1,1, 2,2]
-    >>> B = [0,0, 1,1,2,2,2,2,3,3]
+    >>> A = [3, 3, 3, 0, 0, 0, 1, 1, 2, 2]
+    >>> B = [0, 0, 1, 1, 2, 2, 2, 2, 3, 3]
     >>> majority_judgment({'A': A, 'B': B}, reverse=False)
     {'B': 0, 'A': 1}
     >>> majority_judgment({'A': A, 'B': B}, reverse=True)
