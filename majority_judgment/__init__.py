@@ -50,6 +50,14 @@ def majority_judgment(
     {'B': 0, 'A': 1}
     >>> majority_judgment({81: [0, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5], 82: [0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]})
     {82: 0, 81: 1}
+
+    With a LOT of participants:
+    >>> majority_judgment({ \
+        'A': [(i%7) for i in range(30_000_000)], \
+        'B': [(i%6) for i in range(30_000_000)], \
+        'C': [(i%5) for i in range(30_000_000)], \
+    })
+    {'A': 0, 'B': 1, 'C': 2}
     """
     set_num_votes = {len(votes) for votes in votes_by_candidate.values()}
     if not len(set_num_votes) == 1:
