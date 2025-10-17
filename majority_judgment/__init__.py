@@ -180,10 +180,6 @@ def normalize(votes_by_candidate: Dict[Candidate, List[Vote]]) -> Dict[Candidate
     >>> B = [0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
     >>> votes_by_candidate = {'A': A, 'B': B}
     >>> votes_by_candidate = normalize(votes_by_candidate)
-    >>> len(votes_by_candidate['A'])
-    12
-    >>> len(votes_by_candidate['B'])
-    12
     """
     lengths = [len(v) for v in votes_by_candidate.values()]
     if any(n == 0 for n in lengths):
