@@ -2,6 +2,8 @@ from typing import Dict, List, TypeVar, Protocol, Iterator
 from abc import abstractmethod
 from itertools import accumulate, groupby
 from operator import itemgetter
+from functools import reduce
+from math import gcd
 
 
 class Comparable(Protocol):
@@ -17,7 +19,7 @@ Candidate = TypeVar("Candidate")
 
 
 def majority_judgment(
-    votes_by_candidate: Dict[Candidate, List[Vote]], reverse: bool = False
+    votes_by_candidate: Dict[Candidate, List[Vote]], reverse: bool = False, normalize: bool = False
 ) -> Dict[Candidate, int]:
     """
     Rank a tally using majority judgment
@@ -33,11 +35,17 @@ def majority_judgment(
     reverse: bool
         If true, a lower vote value indicates a better vote.
 
+    normalize: bool
+        If true, candidates with different number of votes are normalized,
+        it may slow down the computation with many candidates >1000.
+        because 1000 * 999 = 999,000 votes are needed to compare 1000 and 999 votes.
+
     Returns
     -------
         Rank order for each candidate in a Dictionary Dict[Candidate, rank: int]
 
-
+    Examples
+    --------
     >>> A = [3, 3, 3, 0, 0, 0, 1, 1, 2, 2]
     >>> B = [0, 0, 1, 1, 2, 2, 2, 2, 3, 3]
     >>> majority_judgment({'A': A, 'B': B}, reverse=False)
@@ -50,23 +58,23 @@ def majority_judgment(
     {'B': 0, 'A': 1}
     >>> majority_judgment({81: [0, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5], 82: [0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]})
     {82: 0, 81: 1}
+    >>> C = [3, 3, 3, 0, 0, 0, 1, 1, 2, 1]
+    >>> majority_judgment({'A': A, 'B': B, 'C': C}, reverse=False, normalize=True)
     """
     set_num_votes = {len(votes) for votes in votes_by_candidate.values()}
-    if not len(set_num_votes) == 1:
-        raise NotImplementedError("Unbalanced grades have not been implemented yet.")
+    if not len(set_num_votes) == 1 and not normalize:
+        raise ValueError("All candidates must have the same number of votes, set normalize=True otherwise.")
+
+    if normalize:
+        votes_by_candidate = normalize(votes_by_candidate)
 
     majority_values = {
-        candidate: list(compute_majority_values(votes, reverse))
-        for candidate, votes in votes_by_candidate.items()
+        candidate: list(compute_majority_values(votes, reverse)) for candidate, votes in votes_by_candidate.items()
     }
 
-    ranked_scores = sorted(
-        majority_values.items(), key=itemgetter(1), reverse=not reverse
-    )
+    ranked_scores = sorted(majority_values.items(), key=itemgetter(1), reverse=not reverse)
 
-    ranking = {
-        candidate: ranking for ranking, (candidate, _) in enumerate(ranked_scores)
-    }
+    ranking = {candidate: ranking for ranking, (candidate, _) in enumerate(ranked_scores)}
 
     return ranking
 
@@ -124,7 +132,7 @@ def compute_majority_values(votes: List[Vote], reverse: bool) -> Iterator[Vote]:
 
     for _ in range(num_votes):
         total = sum(values)
-        cumsum = list(accumulate(values, initial=0.))[1:]
+        cumsum = list(accumulate(values, initial=0.0))[1:]
         cumsum = [v / total for v in cumsum]
 
         idx = median_grade(cumsum)
@@ -143,3 +151,44 @@ def convert_votes_to_tally(votes: List[Vote]) -> Dict[Vote, int]:
     {7: 1, 9: 2, 11: 2}
     """
     return {key: len(list(group)) for key, group in groupby(sorted(votes))}
+
+
+def _lcm(a: int, b: int) -> int:
+    return a * b // gcd(a, b)
+
+
+def normalize(votes_by_candidate: Dict[Candidate, List[Vote]]) -> Dict[Candidate, List[Vote]]:
+    """
+    Normalize the number of votes for each candidate by replicating votes.
+
+    Parameters
+    ----------
+    votes_by_candidate: Dict[Candidate, List[Vote]]
+        Results of the votes
+        Candidate correspond to the names of candidates,
+        List of int is the votes for each candidate.
+        The higher the vote, the better.
+
+    Raises
+    ------
+    ValueError
+        If a candidate has zero votes.
+
+    Examples
+    --------
+    >>> A = [3, 3, 3, 0, 0, 0, 1, 1, 2, 2]
+    >>> B = [0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+    >>> votes_by_candidate = {'A': A, 'B': B}
+    >>> votes_by_candidate = normalize(votes_by_candidate)
+    >>> len(votes_by_candidate['A'])
+    12
+    >>> len(votes_by_candidate['B'])
+    12
+    """
+    lengths = [len(v) for v in votes_by_candidate.values()]
+    if any(n == 0 for n in lengths):
+        raise ValueError("Normalization impossible: a candidate has zero votes.")
+
+    target = reduce(_lcm, lengths)
+
+    return {candidate: votes * (target // len(votes)) for candidate, votes in votes_by_candidate.items()}
